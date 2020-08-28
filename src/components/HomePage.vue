@@ -133,6 +133,7 @@
             :key="index"
             v-model="filters.Schedules[index - 1]"
             v-on:remove="removeTime(index - 1)"
+            :id="index - 1"
           >
           </DateTimeSlider>
         </drop-down>
@@ -162,12 +163,13 @@
         <h2 class="scroll-headers department-header">Department</h2>
       </div>
       <div class="class-listings-scroll-panel">
-        <ClassListing
-          v-for="(course, index) in courses"
-          :key="index"
-          :data="course"
-          :isCollapsed="collapseClassListings"
-        ></ClassListing>
+        <virtual-list
+          style="height: 100%; overflow-y: auto;"
+          :data-key="'Title'"
+          :data-sources="courses"
+          :data-component="itemComponent"
+          :keeps="50"
+        />
       </div>
     </div>
   </div>
@@ -181,15 +183,21 @@ import DateTimeSlider from "./DateTimeSlider.vue";
 import { courses } from "../assets/Data/courseCatalog.js";
 import { departments } from "../assets/Data/departments.js";
 
+// https://www.npmjs.com/package/vue-virtual-scroll-list
+// https://github.com/tangbc/vue-virtual-scroll-list#props-type
+import VirtualList from "vue-virtual-scroll-list";
+
 export default {
   name: "App",
   components: {
     DateTimeSlider,
-    ClassListing,
+
     DropDown,
+    VirtualList,
   },
   data() {
     return {
+      itemComponent: ClassListing,
       courses: courses,
       rangevalue: [30, 70],
       filters: {
@@ -226,6 +234,7 @@ export default {
       });
     },
     removeTime: function(index) {
+      console.log("## remove index:", index);
       this.filters.Schedules.splice(index, 1);
     },
     preprocess: function() {
@@ -361,6 +370,7 @@ html {
   width: 100%;
   margin: 0;
   padding: 0;
+  /* overflow-x: hidden; */
 }
 body {
   height: 100%;
@@ -479,7 +489,7 @@ button {
   align-items: stretch;
   position: relative;
 }
-.class-listings-scroll-panel .class-listing:first-child {
+.class-listings-scroll-panel div[role="listitem"]:first-child {
   margin-top: 60px;
 }
 .class-listings-scroll-header {

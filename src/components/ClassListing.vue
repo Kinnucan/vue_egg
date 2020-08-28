@@ -1,38 +1,56 @@
 <template>
-  <div class="class-listing" :class="{collapsed: isCollapsed, hasExpanded: hasExpanded}">
+  <div
+    class="class-listing"
+    :class="{ collapsed: isCollapsed, hasExpanded: hasExpanded }"
+  >
     <div class="preview-section" @click="toggleExpand()">
       <div class="preview-course-title-container">
-        <h2 class="preview-course-title">{{data.Title}}</h2>
+        <h2 class="preview-course-title">{{ data.Title }}</h2>
       </div>
-      <h3 class="preview-course-code">{{crossListedClassCode(data.ClassCode)}}</h3>
-      <h3 v-if="data.Departments.length>1" class="preview-course-department">Cross Listed Course</h3>
-      <h3 v-else class="preview-course-department">{{data.Departments[0]}}</h3>
+      <h3 class="preview-course-code">
+        {{ crossListedClassCode(data.ClassCode) }}
+      </h3>
+      <h3 v-if="data.Departments.length > 1" class="preview-course-department">
+        Cross Listed Course
+      </h3>
+      <h3 v-else class="preview-course-department">
+        {{ data.Departments[0] }}
+      </h3>
     </div>
     <div class="detail-section">
       <div style="display:flex; padding: 9px 20px;">
-        <p class="course-description">{{data.Description}}</p>
+        <p class="course-description">{{ data.Description }}</p>
         <div class="course-details">
           <p class="course-detail-category">Department</p>
           <ul class="course-detail-info">
-            <li v-for="(Department,index2) in data.Departments" :key="index2">{{Department}}</li>
+            <li v-for="(Department, index2) in data.Departments" :key="index2">
+              {{ Department }}
+            </li>
           </ul>
 
-          <p class="course-detail-category" v-if="data.DistributionReq">Distribution Requirments</p>
+          <p class="course-detail-category" v-if="data.DistributionReq">
+            Distribution Requirments
+          </p>
           <ul class="course-detail-info" v-if="data.DistributionReq">
-            <li>{{data.DistributionReq}}</li>
+            <li>{{ data.DistributionReq }}</li>
           </ul>
 
-          <p
-            class="course-detail-category"
-            v-if="data.GeneralEds.length>0"
-          >General Education Requirments</p>
-          <ul class="course-detail-info" v-if="data.GeneralEds.length>0">
-            <li v-for="(GeneralEd,index2) in data.GeneralEds" :key="index2">{{GeneralEd}}</li>
+          <p class="course-detail-category" v-if="data.GeneralEds.length > 0">
+            General Education Requirments
+          </p>
+          <ul class="course-detail-info" v-if="data.GeneralEds.length > 0">
+            <li v-for="(GeneralEd, index2) in data.GeneralEds" :key="index2">
+              {{ GeneralEd }}
+            </li>
           </ul>
 
-          <p class="course-detail-category" v-if="data.Prerequisites">Prerequisites</p>
+          <p class="course-detail-category" v-if="data.Prerequisites">
+            Prerequisites
+          </p>
           <ul class="course-detail-info" v-if="data.Prerequisites">
-            <li v-for="(Prereq,index2) in data.Prerequisites" :key="index2">{{Prereq}}</li>
+            <li v-for="(Prereq, index2) in data.Prerequisites" :key="index2">
+              {{ Prereq }}
+            </li>
           </ul>
         </div>
       </div>
@@ -54,20 +72,25 @@
               v-for="(section, index2) in data.Sections"
               :key="index2"
             >
-              <td>{{section.id}}</td>
-              <td>{{section.Instructor}}</td>
-              <td>{{section.Room}}</td>
+              <td>{{ section.id }}</td>
+              <td>{{ section.Instructor }}</td>
+              <td>{{ section.Room }}</td>
               <td>
                 <ul class="section-table-time-cell">
-                  <li>{{section.Day}}</li>
+                  <li>{{ section.Day }}</li>
                 </ul>
               </td>
               <td>
                 <ul class="section-table-time-cell">
-                  <li>{{ reformatTimeNormal(section.Time[0]) }} to {{ reformatTimeNormal(section.Time[1]) }}</li>
+                  <li>
+                    {{ reformatTimeNormal(section.Time[0]) }} to
+                    {{ reformatTimeNormal(section.Time[1]) }}
+                  </li>
                 </ul>
               </td>
-              <td>{{section.Availability[0]}}/{{section.Availability[1]}}</td>
+              <td>
+                {{ section.Availability[0] }}/{{ section.Availability[1] }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -80,12 +103,17 @@
 export default {
   name: "ClassListing",
   props: {
-    data: Object,
+    source: Object,
     isCollapsed: {
       type: Boolean,
       default() {
         return true;
       },
+    },
+  },
+  computed: {
+    data: function() {
+      return this.source;
     },
   },
   data() {
@@ -94,11 +122,11 @@ export default {
     };
   },
   methods: {
-    toggleExpand: function () {
+    toggleExpand: function() {
       this.isCollapsed = !this.isCollapsed;
       this.hasExpanded = true;
     },
-    reformatTimeNormal: function (time) {
+    reformatTimeNormal: function(time) {
       var hour = Math.floor(time % 12);
       hour = hour == 0 ? 12 : hour;
       var minute = time - Math.floor(time);
@@ -107,7 +135,7 @@ export default {
       var am_pm = time < 12 ? "am" : "pm";
       return hour + ":" + minute + " " + am_pm;
     },
-    crossListedClassCode: function (codes) {
+    crossListedClassCode: function(codes) {
       var newCode = codes[0].substring(0, codes[0].indexOf(" "));
       for (var i = 1; i < codes.length; i++) {
         newCode += "/" + codes[i].substring(0, codes[i].indexOf(" "));
