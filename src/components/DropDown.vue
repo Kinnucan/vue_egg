@@ -1,8 +1,5 @@
 <template>
-  <div
-    :class="['Drop-down-comp', { collapsed: collapsed }]"
-    :style="expandStyle"
-  >
+  <div :class="['Drop-down-comp', { collapsed: collapsed }]" :style="expandStyle">
     <div class="drop-down-vis" @click="toggleCollapse()">
       <h1 class="title">{{ title }}</h1>
       <img src />
@@ -18,7 +15,7 @@ export default {
   props: {
     title: String,
   },
-  data: function() {
+  data: function () {
     return {
       //   title: "General Education Req",
       slotHeight: 0,
@@ -26,7 +23,7 @@ export default {
     };
   },
   computed: {
-    expandStyle: function() {
+    expandStyle: function () {
       // https://www.telerik.com/blogs/passing-variables-to-css-on-a-vue-component
       return {
         "--height": 80 + this.slotHeight + "px",
@@ -34,7 +31,7 @@ export default {
     },
   },
   methods: {
-    toggleCollapse: function() {
+    toggleCollapse: function () {
       this.collapsed = !this.collapsed;
 
       this.slotHeight = this.$el.getElementsByClassName(
@@ -55,15 +52,13 @@ export default {
       );
     },
   },
-  mounted: function() {
-    // this.slotHeight = this.$el.getElementsByClassName(
-    //   "content"
-    // )[0].clientHeight;
-
-    // this.slotHeight = this.$el.getElementsByClassName(
-    //   "content"
-    // )[0].offsetHeight;
-
+  mounted: function () {
+    const ro = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        this.slotHeight = entry.contentRect.height;
+      }
+    });
+    ro.observe(this.$el.getElementsByClassName("content")[0]);
     this.slotHeight = this.$el.getElementsByClassName(
       "content"
     )[0].scrollHeight;

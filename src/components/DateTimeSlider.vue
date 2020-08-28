@@ -7,27 +7,15 @@
           {{ reformatTimeNormal(value.Time[1]) }}
         </h3>
       </div>
-      <img
-        src="../assets/Icons/close.svg"
-        class="remove-btn"
-        @click="emitRemove()"
-      />
+      <img src="../assets/Icons/close.svg" class="remove-btn" @click="emitRemove()" />
     </div>
     <div class="second-row">
       <div class="time-slider">
-        <ejs-slider
-          id="range"
-          :min="minVal"
-          :max="maxVal"
-          v-model="value.Time"
-          type="Range"
-        ></ejs-slider>
+        <ejs-slider id="range" :min="minVal" :max="maxVal" v-model="value.Time" type="Range"></ejs-slider>
       </div>
       <div class="date-select">
         <select v-model="value.Day">
-          <option v-for="(date, index) in dates" :key="index" :value="date">
-            {{ date }}
-          </option>
+          <option v-for="(date, index) in dates" :key="index" :value="date">{{ date }}</option>
         </select>
       </div>
     </div>
@@ -45,7 +33,7 @@ export default {
   props: {
     value: Object,
   },
-  data: function() {
+  data: function () {
     return {
       minVal: "0",
       maxVal: "24",
@@ -53,10 +41,10 @@ export default {
     };
   },
   methods: {
-    emitRemove: function() {
+    emitRemove: function () {
       this.$emit("remove");
     },
-    reformatTimeNormal: function(time) {
+    reformatTimeNormal: function (time) {
       var hour = Math.floor(time % 12);
       hour = hour == 0 ? 12 : hour;
       var minute = time - Math.floor(time);
@@ -85,6 +73,7 @@ export default {
   border: 1px solid #dadada;
   margin: 5px 0;
   width: -webkit-fill-available;
+  width: -moz-available;
 }
 .DateTimeSlider > div {
   display: flex;
